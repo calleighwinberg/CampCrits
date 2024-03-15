@@ -56,8 +56,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 
-//Define a middleware in app.js so we have access to template messages on every since request 
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//Define a middleware in app.js so we have access to template messages on every since request. these are gloabal for every route 
 app.use((req, res, next) => {
+    console.log(req.session)
+    res.locals.currentUser = req.user; //now all templates have access to currentUser
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next(); //make sure to proceed to next call 
