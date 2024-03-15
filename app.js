@@ -6,10 +6,14 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
+const passport = require('passport'); //allows us to plugin mutliple strategies for auth
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
 
-const campgrounds = require('./routes/campgrounds');
-const reviews = require('./routes/reviews');
+const userRoutes = require('./routes/users');
+const campgroundRoutes = require('./routes/campgrounds');
+const reviewRoutes = require('./routes/reviews');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -48,6 +52,10 @@ app.use(session(sessionConfig))
 app.use(flash());
 
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
 //Define a middleware in app.js so we have access to template messages on every since request 
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
@@ -57,8 +65,9 @@ app.use((req, res, next) => {
 
 
 //you need APP.USE() to specify router and path. these are here to seperate the paths into different files 
-app.use('/campgrounds', campgrounds)
-app.use('/campgrounds/:id/reviews', reviews)
+app.use('/', userRoutes);
+app.use('/campgrounds', campgroundRoutes)
+app.use('/campgrounds/:id/reviews', reviewRoutes)
 
 app.get('/', (req, res) => {
     res.render('home')
