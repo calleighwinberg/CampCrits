@@ -26,6 +26,7 @@ module.exports.renderLogin = (req, res) => {
 }
 
 
+
 //redirecting after logging in 
 module.exports.login = (req, res) => {
     req.flash('success', 'welcome back!');
