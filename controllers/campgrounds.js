@@ -1,7 +1,9 @@
 
 const Campground = require('../models/campground');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const { cloudinary } = require("../cloudinary");
-
+const mapBoxToken = process.env.MAPBOX_TOKEN; //pass in token
+const geocoder = mbxGeocoding({accessToken: mapBoxToken}); //pass in access token under key of accessToken. intiatiate a new mbxGeocoding. this contains the method we want 
 //route to show all campgrounds
 module.exports.index = async (req, res) => {
     const campgrounds = await Campground.find({});
@@ -15,7 +17,13 @@ module.exports.renderNewForm = (req, res) => {
 
 //create new campground
 module.exports.createCampground = async (req, res, next) => {
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location, //we nested all our form fields under campground
+        limit: 1
+    }).send()
     const campground = new Campground(req.body.campground);
+    campground.geometry = geoData.body.features[0].geometry; //we store the geometry returned field in geometry defined field in schema 
+    //if(campground.geometry) {}
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename })); //an array for each file uploaded to get path and filename
     campground.author = req.user._id;
     await campground.save();
