@@ -1,6 +1,6 @@
-# CampCrits - a guide for happy campers
+# CampCrits
 
-CampCrits is a full-stack application designed to mimic Yelp. Users can login, create campgrounds, leave reviews, and explore the great outdoors!
+A guide for happy campers! CampCrits is a full-stack application designed to mimic Yelp. Users can login, create campgrounds, leave reviews, and explore the great outdoors!
 
 <img width="945" alt="Screenshot 2024-03-20 at 11 13 19 AM" src="https://github.com/calleighwinberg/YelpCamp/assets/149536156/4eb1e47e-24d6-4468-920d-b55523bfd80c">
 
