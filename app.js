@@ -61,6 +61,7 @@ store.on("error", function (e) {
     console.log("session store error", e)
 })
 
+//create a session to store session info
 const sessionConfig = {
     store, //we should now be using mongo to store our information 
     name: 'sessName', //we dont want to use default name 
