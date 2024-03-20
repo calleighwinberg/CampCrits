@@ -1,8 +1,9 @@
-
 //if in development, inlcude env vars
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 }
+
+//mongodb+srv://calleigh:uIMTqjMQKuaD6KiV@cluster0.oea3heo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 const express = require('express');
 const path = require('path');
@@ -15,13 +16,17 @@ const methodOverride = require('method-override');
 const passport = require('passport'); //allows us to plugin mutliple strategies for auth
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const mongoSanitize = require('express-mongo-sanitize');
+const MongoStore = require('connect-mongo');
 
 
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+//const dbURL = process.env.DB_URL
+const dbUrl = 'mongodb://localhost:27017/yelp-camp';
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -43,13 +48,28 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(mongoSanitize());
+
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'thisshouldbeabettersecret!'
+    }
+});
+store.on("error", function (e) {
+    console.log("session store error", e)
+})
 
 const sessionConfig = {
+    store, //we should now be using mongo to store our information 
+    name: 'sessName', //we dont want to use default name 
     secret: 'thisshouldbeabettersecret!',
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
+        //secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7, //miliseconds in a week. 
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -67,7 +87,7 @@ passport.deserializeUser(User.deserializeUser());
 
 //Define a middleware in app.js so we have access to template messages on every since request. these are gloabal for every route 
 app.use((req, res, next) => {
-    console.log(req.session)
+    console.log(req.query)
     res.locals.currentUser = req.user; //now all templates have access to currentUser
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
