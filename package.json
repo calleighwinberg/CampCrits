@@ -2,7 +2,7 @@
   "engines": {
     "node": "18.13.0"
   },
-  "name": "YelpCamp",
+  "name": "CampCrits",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
