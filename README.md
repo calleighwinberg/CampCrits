@@ -4,14 +4,11 @@ A guide for happy campers! CampCrits is a full-stack application designed to mim
 
 <img width="945" alt="Screenshot 2024-03-20 at 11 13 19 AM" src="https://github.com/calleighwinberg/YelpCamp/assets/149536156/4eb1e47e-24d6-4468-920d-b55523bfd80c">
 
-
 ## Description
 
 CampCrits uses Node.js, Express, MongoDB, and Bootstrap for design and deployment. Passport.js is used to handle authentication. The application was designed through Colt Steele's bootcamp for Web Development, with added features. CampCrits aims to build an alternative resource that allows users to create and rate their own campgrounds as well as interact with others. The app hosts the production database through MongoDB and is deployed using Render. 
 
-## Getting Started
-
-### Tech Stack
+## Tech Stack
 * HTML5 - markup language used for creating web page and web application
 
 * Bootstrap - front-end web framework for designing websites and web applications quickly
